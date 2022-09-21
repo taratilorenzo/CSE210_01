@@ -87,7 +87,7 @@ def next_player(player):
 
 """play() give the turn to either x or o"""
 def play(player, board):
-    #prompt user to chose a postion
+    #prompt user to chose a position
     position = int(input(f"{player}'s turn chose a position: "))
     
     #using recursive
