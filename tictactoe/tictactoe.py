@@ -55,6 +55,14 @@ def display_board(board):
     print("__________")
     print(f"{board[6]} | {board[7]} | {board[8]}")
 
+"""is_a_draw() function check if all postion have been chosen"""
+def is_a_draw(board):
+    #using for loop to check if all postion is used we return true if not  return false
+    for position in range(9):
+        if board[position] != "x" and board[position] != "o":
+            return False
+    return True
+
 """winner() function return true if at least one possibilities appear"""
 def winner(board):
     #return all the possibility of a winning sequence
@@ -69,14 +77,6 @@ def winner(board):
             #the 2 diagonal possibilities
             board[0] == board[4] == board[8] or
             board[2] == board[4] == board[6])
-
-"""is_a_draw() function check if all postion have been chosen"""
-def is_a_draw(board):
-    #using for loop to check if all postion is used we return true if not  return false
-    for position in range(9):
-        if board[position] != "x" and board[position] != "o":
-            return False
-    return True
 
 """next_player() give a turn to each player"""
 def next_player(player):
