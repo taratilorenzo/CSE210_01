@@ -1,5 +1,5 @@
 from game.terminal_service import TerminalService
-from game.puzzle import Puzzle
+from game.word import Word
 from game.jumper import Jumper
 
 
@@ -9,9 +9,9 @@ class Director:
     The responsibility of a Director is to control the sequence of play.
 
     Attributes:
-        hider (Hider): The game's hider.
+        jumper (Jumper): The game's jumper.
         is_playing (boolean): Whether or not to keep playing.
-        seeker (Seeker): The game's seeker.
+        puzzle (Puzzle): The game's secret word.
         terminal_service: For getting and displaying information on the terminal.
     """
 
@@ -21,8 +21,8 @@ class Director:
         Args:
             self (Director): an instance of Director.
         """
-        self._puzzle = Puzzle()
         self._is_playing = True
+        self._word = Word()
         self._jumper = Jumper()
         self._terminal_service = TerminalService()
         
@@ -33,6 +33,7 @@ class Director:
             self (Director): an instance of Director.
         """
         while self._is_playing:
+            self._word.guessed_word()
             self._get_inputs()
             self._do_updates()
             self._do_outputs()
@@ -43,8 +44,7 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        new_location = self._terminal_service.read_number("\nEnter a location [1-1000]: ")
-        self._seeker.move_location(new_location)
+        self._word._guess_letter =  self._terminal_service.read_letter("\nGuess a letter  [a-z]: ")
         
     def _do_updates(self):
         """Keeps watch on where the seeker is moving.
@@ -52,7 +52,10 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        self._hider.watch_seeker(self._seeker)
+        if self._word.is_found() == False:
+            if self._jumper.watch_turns() == 5:
+                self._is_playing = False
+
         
     def _do_outputs(self):
         """Provides a hint for the seeker to use.
@@ -60,7 +63,10 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        hint = self._hider.get_hint()
+        
+        hint = self._word.get_hint()
         self._terminal_service.write_text(hint)
-        if self._hider.is_found():
+        if self._word._empty_list == self._word._letters:
+            hint = self._word.get_hint()
+            self._terminal_service.write_text(hint)
             self._is_playing = False
